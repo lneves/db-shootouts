@@ -51,9 +51,12 @@ bin
 ######################
 attic
 docs
+implementations
+egen_loader
 *.tar.gz
 *.zip
 *.gz
+
 
 # Maven stuff #
 ######################
