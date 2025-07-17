@@ -50,6 +50,10 @@ bin
 # Local stuff #
 ######################
 attic
+docs
+*.tar.gz
+*.zip
+*.gz
 
 # Maven stuff #
 ######################
