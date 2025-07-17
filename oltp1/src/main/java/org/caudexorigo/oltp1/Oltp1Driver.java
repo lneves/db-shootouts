@@ -70,36 +70,35 @@ public class Oltp1Driver {
 			final TxInputGenerator txInputGen = new TxInputGenerator(sqlCtx);
 
 //			# Read-Write Transactions
-//			    Trade-Order (TO)
-//			    Trade-Result (TR)
-//			    Trade-Update (TU)
-//			    Market-Feed (MF)
-//			    Customer-Update (CU)
-//			    Broker-Update (BU)
-//			    Company-Update (COU)
-//			    Daily-Market (DM)
-//			    Data-Maintenance (DMt)
+//			Data Maintenance Light R/W -
+//			Market Feed Medium R/W 1%
+//			Trade-Cleanup Medium R/W -
+//			Trade-Order Heavy R/W 10.1%
+//			Trade-Result Heavy R/W 10%
+//			Trade-Update Medium R/W 2%
 //
 //			# Read-Only Transactions
-//			    Trade-Status (TS) *
-//			    Trade-Lookup (TL) *
-//			    Customer-Position (CP) *
-//			    Customer-Account-Information (CA)
-//			    Customer-Account-Summary (CAS)
-//			    Customer-Watch-List (CW)
-//			    Security-Detail (SD)
+//			Broker Volume Mid-Heavy R/O 4.9%
+//			Customer Position Mid-Heavy R/O 13%
+//			Market Watch Medium R/O 18%
+//			Security Detail Medium R/O 14%
+//			Trade-Lookup Medium R/O 8%
+//			Trade-Status Light R/O 19%
 
 			Map<String, StatsCollector> collectors = new LinkedHashMap<>();
 			collectors.put("Broker-Volume", new StatsCollector("Broker-Volume", 0.049));
-			collectors.put("Customer-Position", new StatsCollector("Customer-Position", 0.13)); //
+			collectors.put("Customer-Position", new StatsCollector("Customer-Position", 0.13)); 
 			collectors.put("Market-Watch", new StatsCollector("Market-Watch", 0.18));
 			collectors.put("Security-Detail", new StatsCollector("Security-Detail", 0.14));
-			collectors.put("Trade-Lookup", new StatsCollector("Trade-Lookup", 0.08)); //
-			collectors.put("Trade-Status", new StatsCollector("Trade-Status", 0.19)); //
-			// collectors.put("Trade-Order", new StatsCollector("Trade-Order", 0.101));
-			// collectors.put("Trade-Result", new StatsCollector("Trade-Result", 0.10));
-			// collectors.put("Market-Feed", new StatsCollector("Market-Feed", 0.01));
-			// collectors.put("Trade-Update", new StatsCollector("Trade-Update", 0.02));
+			collectors.put("Trade-Lookup", new StatsCollector("Trade-Lookup", 0.08));
+			collectors.put("Trade-Status", new StatsCollector("Trade-Status", 0.19));
+			
+			collectors.put("Market-Feed", new StatsCollector("Market-Feed", 0.01));
+			collectors.put("Trade-Order", new StatsCollector("Trade-Order", 0.101));
+			collectors.put("Trade-Result", new StatsCollector("Trade-Result", 0.10));
+			collectors.put("Trade-Update", new StatsCollector("Trade-Update", 0.02));
+			
+			
 
 			List<StatsCollector> colList = new ArrayList<>(collectors.values());
 
