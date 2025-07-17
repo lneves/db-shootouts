@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+set -eux
+cd $(dirname $0)
+
+source db.properties
+
+# export to make it available to sqlcmd
+export BENCH_USER=$BENCH_USER
+export BENCH_PASSWORD=$BENCH_PASSWORD
+
+SQLCMD="/opt/homebrew/bin/sqlcmd -b -S ${DB_SERVER_HOST} -U ${ADMIN_USER} -P ${ADMIN_PASSWORD} -C"
+BCP="/opt/homebrew/bin/bcp"
+BCP_ARGS="-c -t| -r 0x0A -S ${DB_SERVER_HOST} -d tpce -U ${BENCH_USER} -P ${BENCH_PASSWORD} -u"
+
+
+export DATA_DIR=/Users/lneves/tmp/tpc-e-tool/flat_out
+
+function load_data {
+echo "load table data"
+$BCP account_permission in ${DATA_DIR}/AccountPermission.txt -k $BCP_ARGS
+$BCP address in ${DATA_DIR}/Address.txt $BCP_ARGS
+$BCP broker in ${DATA_DIR}/Broker.txt -k $BCP_ARGS
+$BCP cash_transaction in ${DATA_DIR}/CashTransaction.txt -k $BCP_ARGS
+$BCP charge in ${DATA_DIR}/Charge.txt -k $BCP_ARGS
+$BCP commission_rate in ${DATA_DIR}/CommissionRate.txt -k $BCP_ARGS
+$BCP company in ${DATA_DIR}/Company.txt -k $BCP_ARGS
+$BCP company_competitor in ${DATA_DIR}/CompanyCompetitor.txt -k $BCP_ARGS
+$BCP customer in ${DATA_DIR}/Customer.txt $BCP_ARGS
+$BCP customer_account in ${DATA_DIR}/CustomerAccount.txt -k $BCP_ARGS
+$BCP customer_taxrate in ${DATA_DIR}/CustomerTaxrate.txt -k $BCP_ARGS
+$BCP daily_market in ${DATA_DIR}/DailyMarket.txt -k $BCP_ARGS
+$BCP exchange in ${DATA_DIR}/Exchange.txt -k $BCP_ARGS
+$BCP financial in ${DATA_DIR}/Financial.txt -k $BCP_ARGS
+$BCP holding in ${DATA_DIR}/Holding.txt -k $BCP_ARGS
+$BCP holding_history in ${DATA_DIR}/HoldingHistory.txt -k $BCP_ARGS
+$BCP holding_summary in ${DATA_DIR}/HoldingSummary.txt -k $BCP_ARGS
+$BCP industry in ${DATA_DIR}/Industry.txt -k $BCP_ARGS
+$BCP last_trade in ${DATA_DIR}/LastTrade.txt -k $BCP_ARGS
+$BCP news_item in ${DATA_DIR}/NewsItem.txt -k $BCP_ARGS
+$BCP news_xref in ${DATA_DIR}/NewsXRef.txt -k $BCP_ARGS
+$BCP sector in ${DATA_DIR}/Sector.txt -k $BCP_ARGS
+$BCP security in ${DATA_DIR}/Security.txt -k $BCP_ARGS
+$BCP settlement in ${DATA_DIR}/Settlement.txt -k $BCP_ARGS
+$BCP status_type in ${DATA_DIR}/StatusType.txt -k $BCP_ARGS
+$BCP taxrate in ${DATA_DIR}/TaxRate.txt -k $BCP_ARGS
+$BCP trade in ${DATA_DIR}/Trade.txt -k -E $BCP_ARGS
+$BCP trade_history in ${DATA_DIR}/TradeHistory.txt -k $BCP_ARGS
+$BCP trade_type in ${DATA_DIR}/TradeType.txt -k $BCP_ARGS
+$BCP watch_item in ${DATA_DIR}/WatchItem.txt -k $BCP_ARGS
+$BCP watch_list in ${DATA_DIR}/WatchList.txt -k $BCP_ARGS
+$BCP zip_code in ${DATA_DIR}/ZipCode.txt -k $BCP_ARGS
+}
+
+begin=$(date +%s)
+
+time $SQLCMD -i 0_create_database.sql
+time $SQLCMD -i 1_create_table.sql
+time load_data | grep -v "rows sent to SQL Server"
+time $SQLCMD -e -i 3_create_pk.sql
+time $SQLCMD -e -i 4_create_index.sql
+time $SQLCMD -e -i 5_create_fk.sql
+time $SQLCMD -e -i 6_create_sequence.sql
+time $SQLCMD -e -i 7_analyze_table.sql
+time $SQLCMD -e -i  8_db_settings.sql
+
+end=$(date +%s)
+elapsed=$((end-begin))
+echo "import took ${elapsed} seconds"

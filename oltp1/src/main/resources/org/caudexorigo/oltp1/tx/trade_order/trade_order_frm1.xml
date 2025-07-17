@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<properties>
+
+	<entry key="get_customer_info">
+ <![CDATA[
+SELECT
+	ca_b_id
+	, ca_c_id
+	, ca_name
+	, ca_tax_st
+	, c_l_name
+	, c_f_name
+	, c_tax_id
+	, c_tier
+	, b_name
+FROM
+	customer_account
+	JOIN customer ON ca_c_id = c_id
+	JOIN broker ON ca_b_id = b_id
+WHERE
+	ca_id = :acct_id
+]]>
+	</entry>
+
+</properties>

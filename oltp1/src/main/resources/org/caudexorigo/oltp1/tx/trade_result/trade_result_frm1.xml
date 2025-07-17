@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<properties>
+
+	<entry key="get_trade_info">
+ <![CDATA[
+SELECT
+	t_ca_id AS acct_id
+	, t_chrg AS charge
+	, COALESCE(hs_qty, 0) AS hs_qty
+	, t_s_symb AS symbol
+	, t_is_cash AS trade_is_cash
+	, t_qty As trade_qty
+	, t_tt_id AS type_id
+	, tt_is_mrkt AS type_is_market
+	, tt_is_sell AS type_is_sell
+	, tt_name AS type_name
+	, t_lifo AS is_lifo
+FROM
+	trade
+	JOIN trade_type ON t_tt_id = tt_id
+	LEFT JOIN holding_summary ON hs_ca_id = t_ca_id AND hs_s_symb = t_s_symb
+WHERE
+	t_id = :trade_id
+]]>
+	</entry>
+
+</properties>

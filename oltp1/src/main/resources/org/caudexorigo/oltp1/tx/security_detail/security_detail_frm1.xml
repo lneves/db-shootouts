@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<properties>
+
+	<entry key="get_info_1">
+ <![CDATA[
+SELECT
+	s_name
+	, co_id
+	, co_name
+	, co_sp_rate
+	, co_ceo
+	, co_desc
+	, co_open_date
+	, co_st_id
+	, ca.ad_line1 AS co_ad_line1
+	, ca.ad_line2 AS co_ad_line2
+	, zca.zc_town AS co_zc_town
+	, zca.zc_div AS co_zc_div
+	, ca.ad_zc_code AS co_ad_zc_code
+	, ca.ad_ctry AS co_ad_ctry
+	, s_num_out
+	, s_start_date
+	, s_exch_date
+	, s_pe
+	, s_52wk_high
+	, s_52wk_high_date
+	, s_52wk_low
+	, s_52wk_low_date
+	, s_dividend
+	, s_yield
+	, ea.ad_line1 AS ex_ad_line1
+	, ea.ad_line2 AS ex_ad_line2
+	, zea.zc_town AS ex_zc_town
+	, zea.zc_div AS ex_zc_div
+	, ea.ad_ctry AS ex_ad_ctry
+	, ea.ad_zc_code AS ex_ad_zc_code
+	, ex_desc
+	, ex_name
+	, ex_num_symb
+	, ex_open
+	, ex_close
+FROM
+	security
+	, company
+	, address ca
+	, address ea
+	, zip_code zca
+	, zip_code zea
+	, exchange
+WHERE
+	s_symb = CAST(:symbol AS varchar(15))
+	AND co_id = s_co_id
+	AND ca.ad_id = co_ad_id
+	AND ea.ad_id = ex_ad_id
+	AND ex_id = s_ex_id
+	AND ca.ad_zc_code = zca.zc_code
+	AND ea.ad_zc_code = zea.zc_code
+]]>
+	</entry>
+
+	<entry key="get_info_2">
+ <![CDATA[
+SELECT
+	co_name,
+	in_name
+FROM
+	company_competitor
+	, company
+	, industry
+WHERE
+	cp_co_id = :co_id
+	AND co_id = cp_comp_co_id
+	AND in_id = cp_in_id;
+]]>
+	</entry>
+
+	<entry key="get_info_3">
+ <![CDATA[
+SELECT
+	fi_year
+	, fi_qtr
+	, fi_qtr_start_date
+	, fi_revenue
+	, fi_net_earn
+	, fi_basic_eps
+	, fi_dilut_eps
+	, fi_margin
+	, fi_inventory
+	, fi_assets
+	, fi_liability
+	, fi_out_basic
+	, fi_out_dilut
+FROM
+	financial
+WHERE
+	fi_co_id = :co_id
+ORDER BY
+	fi_year ASC, fi_qtr
+OFFSET 0 ROWS FETCH NEXT 20 ROWS ONLY;
+]]>
+	</entry>
+
+	<entry key="get_info_4">
+ <![CDATA[
+SELECT
+	dm_date
+	, dm_close
+	, dm_high
+	, dm_low
+	, dm_vol
+FROM
+	daily_market
+WHERE
+	dm_s_symb = CAST(:symbol AS varchar(15))
+	AND dm_date >= :start_day
+ORDER BY
+	dm_date ASC
+OFFSET 0 ROWS FETCH NEXT (:max_rows_to_return) ROWS ONLY;
+]]>
+	</entry>
+
+	<entry key="get_info_5">
+ <![CDATA[
+SELECT
+	lt_price
+	, lt_open_price
+	, lt_vol
+FROM
+	last_trade
+WHERE
+	lt_s_symb = CAST(:symbol AS varchar(15));
+]]>
+	</entry>
+
+	<entry key="get_info_6">
+ <![CDATA[
+SELECT
+	ni_dts
+	, ni_source
+	, ni_author
+	, ni_item
+FROM
+	news_xref
+	, news_item
+WHERE
+	ni_id = nx_ni_id
+	AND nx_co_id = :co_id
+ORDER BY
+	ni_dts ASC
+OFFSET 0 ROWS FETCH NEXT 2 ROWS ONLY;
+]]>
+	</entry>
+
+	<entry key="get_info_7">
+ <![CDATA[
+SELECT
+	ni_dts
+	, ni_source
+	, ni_author
+	, ni_headline
+	, ni_summary
+FROM
+	news_xref
+	, news_item
+WHERE
+	ni_id = nx_ni_id
+	AND nx_co_id = :co_id
+ORDER BY
+	ni_dts ASC
+OFFSET 0 ROWS FETCH NEXT 2 ROWS ONLY;
+]]>
+	</entry>
+
+</properties>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<properties>
+
+	<entry key="get_old_mkt_cap_by_customer">
+ <![CDATA[
+ SELECT
+ 	COALESCE(SUM(s_num_out * dm_close), 0.0)
+FROM
+	daily_market
+	, security
+	, watch_item
+	, watch_list
+WHERE
+	wi_s_symb = s_symb
+	and wi_s_symb = dm_s_symb
+	AND dm_date = :start_date
+	AND wi_wl_id = wl_id
+	AND wl_c_id = :cust_id
+]]>
+	</entry>
+
+	<entry key="get_new_mkt_cap_by_customer">
+ <![CDATA[
+SELECT
+	COALESCE(SUM(s_num_out * lt_price), 0.0)
+FROM
+	last_trade
+	, security
+	, watch_item
+	, watch_list
+WHERE
+	wi_s_symb = s_symb
+	AND wi_s_symb = lt_s_symb
+	AND wi_wl_id = wl_id
+	AND wl_c_id = :cust_id
+]]>
+	</entry>
+
+
+	<entry key="get_old_mkt_cap_by_account">
+ <![CDATA[
+SELECT
+	COALESCE(SUM(s_num_out * dm_close), 0.0) AS old_mkt_cap
+FROM
+	daily_market
+	, security
+	, holding_summary
+WHERE
+	hs_s_symb = s_symb
+	AND hs_s_symb = dm_s_symb
+	AND dm_date = :start_date
+	AND hs_ca_id = :acct_id
+]]>
+	</entry>
+
+
+	<entry key="get_new_mkt_cap_by_account">
+ <![CDATA[
+SELECT
+	COALESCE(SUM(s_num_out * lt_price), 0.0) AS new_mkt_cap
+from
+	last_trade
+	, security
+	, holding_summary
+WHERE
+	hs_s_symb = s_symb
+	AND hs_s_symb = lt_s_symb
+	AND hs_ca_id = :acct_id
+]]>
+	</entry>
+
+
+	<entry key="get_old_mkt_cap_by_industry">
+ <![CDATA[
+SELECT
+	COALESCE(SUM(s_num_out * dm_close), 0.0) AS old_mkt_cap
+FROM
+	industry
+	, company
+	, security
+	, daily_market
+WHERE
+	s_symb = dm_s_symb
+	AND dm_date = :start_date
+	AND co_in_id = in_id
+	AND s_co_id = co_id
+	AND in_name = :industry_name
+	AND co_id BETWEEN :starting_co_id AND :ending_co_id
+]]>
+	</entry>
+
+	<entry key="get_new_mkt_cap_by_industry">
+ <![CDATA[
+SELECT
+	COALESCE(SUM(s_num_out * lt_price), 0.0) AS new_mkt_cap
+FROM
+	industry
+	, company
+	, security
+	, last_trade
+WHERE
+	co_in_id = in_id
+	AND s_co_id = co_id
+	AND s_symb = lt_s_symb
+	AND in_name = :industry_name
+	AND co_id BETWEEN :starting_co_id AND :ending_co_id
+]]>
+	</entry>
+
+</properties>

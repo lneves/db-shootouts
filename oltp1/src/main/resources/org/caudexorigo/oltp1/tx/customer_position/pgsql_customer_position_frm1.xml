@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<properties>
+
+	<entry key="get_customer_by_cid">
+ <![CDATA[
+SELECT
+	*
+FROM
+	customer
+WHERE
+	c_id = :c_id;	
+]]>
+	</entry>
+
+	<entry key="get_customer_by_taxid">
+ <![CDATA[
+SELECT
+	c_id
+FROM
+	customer
+WHERE
+	c_tax_id = :c_tax_id;	
+]]>
+	</entry>
+
+	<entry key="get_custommer_accounts">
+ <![CDATA[
+SELECT
+	ca_id AS acct_id
+	, ca_bal AS cash_bal
+	, SUM(COALESCE(hs_qty * lt_price, 0)) AS assets_total
+FROM
+	customer_account
+	LEFT JOIN holding_summary ON ca_id=hs_ca_id
+	LEFT JOIN last_trade ON hs_s_symb = lt_s_symb
+WHERE
+	ca_c_id = :ca_c_id
+	AND lt_s_symb = hs_s_symb
+GROUP BY
+	ca_id
+	, ca_bal
+ORDER BY
+	3 ASC
+LIMIT 10;
+]]>
+	</entry>
+
+	<entry key="get_trade_history">
+ <![CDATA[
+SELECT
+	t_id
+	, t_s_symb
+	, t_qty
+	, st_name
+	, th_dts
+FROM
+	(
+		SELECT
+			t_id AS id
+		FROM
+			trade
+		WHERE
+			t_ca_id = :t_ca_id
+		ORDER BY t_dts DESC LIMIT  10
+	) AS t
+	, trade
+	, trade_history
+	, status_type
+WHERE
+	t_id = id
+	AND th_t_id = t_id
+	AND st_id = th_st_id
+ORDER BY
+	th_dts DESC
+LIMIT 30;
+]]>
+	</entry>
+
+</properties>

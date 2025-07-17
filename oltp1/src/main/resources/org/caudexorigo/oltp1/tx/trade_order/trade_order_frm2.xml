@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<properties>
+
+	<entry key="get_account_permissions">
+ <![CDATA[
+SELECT
+	ap_acl
+FROM
+	account_permission
+WHERE
+	ap_ca_id = :acct_id
+	AND ap_l_name = :exec_l_name
+	AND ap_f_name = :exec_f_name
+	AND ap_tax_id = :exec_tax_id
+]]>
+	</entry>
+</properties>
+

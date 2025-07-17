@@ -1,0 +1,21 @@
+version: '3.9'
+
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2025-latest
+    container_name: mssql
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=P@ssW0rd
+      - MSSQL_DATA_DIR=/var/opt/mssql/data
+      - MSSQL_LOG_DIR=/var/opt/mssql/logs
+    deploy:
+      resources:
+        limits:
+          cpus: 4
+          memory: 30G
+    ports:
+      - "1433:1433"
+    volumes:
+      - /disk1/db/mssql:/var/opt/mssql/data
+      - /disk2/db/mssql:/var/opt/mssql/logs

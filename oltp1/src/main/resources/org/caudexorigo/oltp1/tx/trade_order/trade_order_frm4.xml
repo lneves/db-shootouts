@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<properties>
+
+	<entry key="insert_trade">
+ <![CDATA[
+INSERT INTO trade
+(
+	t_dts
+	, t_st_id
+	, t_tt_id
+	, t_is_cash
+	, t_s_symb
+	, t_qty
+	, t_bid_price
+	, t_ca_id
+	, t_exec_name
+	, t_trade_price
+	, t_chrg
+	, t_comm
+	, t_tax
+	, t_lifo
+)
+VALUES
+(
+	:trade_dts
+	, :status_id
+	, :trade_type_id
+	, :is_cash
+	, :symbol
+	, :trade_qty
+	, :requested_price
+	, :acct_id
+	, :exec_name
+	, NULL
+	, :charge_amount
+	, :comm_amount
+	, 0
+	, :is_lifo
+);
+]]>
+	</entry>
+
+	<entry key="insert_trade_request">
+ <![CDATA[
+INSERT INTO trade_request
+	(
+	tr_t_id
+	, tr_tt_id
+	, tr_s_symb
+	, tr_qty
+	, tr_bid_price
+	, tr_b_id
+)
+VALUES
+(
+	:t_id
+	, :trade_type_id
+	, :symbol
+	, :trade_qty
+	, :requested_price
+	, :broker_id
+);
+]]>
+	</entry>
+
+	<entry key="insert_trade_history">
+ <![CDATA[	
+INSERT INTO trade_history
+(
+	th_t_id
+	, th_dts
+	, th_st_id
+)
+VALUES
+(
+	:t_id
+	, :trade_dts
+	, :status_id
+);
+]]>
+	</entry>
+
+</properties>

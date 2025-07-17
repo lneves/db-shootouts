@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<properties>
+
+	<entry key="frm4">
+ <![CDATA[
+SELECT
+	hh_h_t_id
+	, hh_t_id
+	, hh_before_qty
+	, hh_after_qty
+FROM
+	holding_history
+WHERE
+	hh_h_t_id IN (
+		SELECT
+			hh_h_t_id
+		FROM
+			holding_history
+		WHERE
+			hh_t_id IN (
+				SELECT t_id
+				FROM
+					trade
+				WHERE
+					t_ca_id = :ca_id
+					AND t_dts >= :start_dts
+				ORDER BY
+					t_dts ASC
+				OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY
+				)
+			);
+]]>
+	</entry>
+
+</properties>

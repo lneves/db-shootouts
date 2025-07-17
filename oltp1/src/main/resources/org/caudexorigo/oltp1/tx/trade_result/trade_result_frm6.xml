@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<properties>
+
+	<entry key="insert_settlement">
+<![CDATA[
+INSERT INTO settlement
+(
+	se_t_id
+	, se_cash_type
+	, se_cash_due_date
+	, se_amt
+)
+VALUES
+(
+	:trade_id
+	, :cash_type
+	, :due_date
+	, :se_amount
+);
+]]>
+	</entry>
+
+	<entry key="update_customer_account">
+<![CDATA[
+UPDATE customer_account
+SET
+	ca_bal = ca_bal + :se_amount
+WHERE
+	ca_id = :acct_id;
+]]>
+	</entry>
+
+	<entry key="insert_cash_transaction">
+<![CDATA[
+INSERT INTO cash_transaction
+(
+	ct_t_id
+	, ct_dts
+	, ct_amt
+	, ct_name
+)
+VALUES
+(
+	:trade_id
+	, :trade_dts
+	, :se_amount
+	, :ct_name
+);
+]]>
+	</entry>
+
+	<entry key="get_account_balance">
+<![CDATA[
+SELECT
+	ca_bal
+FROM
+	customer_account
+WHERE
+	ca_id =:acct_id;
+]]>
+	</entry>
+
+</properties>
+
+
+
+
+
+
+

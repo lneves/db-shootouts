@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<properties>
+
+	<entry key="get_trade_name">
+ <![CDATA[
+SELECT
+	c_l_name
+	, c_f_name
+	, b_name
+FROM
+	customer_account
+	, customer
+	, broker
+WHERE
+	ca_id = :acct_id
+	AND c_id = ca_c_id
+	AND b_id = ca_b_id
+]]>
+	</entry>
+
+	<entry key="get_trade_status">
+ <![CDATA[
+SELECT
+	t_chrg
+	, t_exec_name
+	, ex_name
+	, s_name
+	, st_name
+	, t_s_symb
+	, t_dts
+	, t_id
+	, t_qty
+	, tt_name
+FROM
+	(
+		SELECT
+			t_s_symb
+			, t_dts
+			, t_id
+			, t_qty
+			, t_chrg
+			, t_exec_name
+			, t_st_id
+			, t_tt_id
+			, t_ca_id
+		FROM
+			trade
+		WHERE
+			t_ca_id = :acct_id
+		ORDER BY
+			t_dts DESC LIMIT 50
+	) AS tt
+	, status_type
+	, trade_type
+	, "security"
+	, exchange
+WHERE
+	st_id = tt.t_st_id
+	AND tt_id = tt.t_tt_id
+	AND s_symb = tt.t_s_symb
+	AND ex_id = s_ex_id;
+]]>
+	</entry>
+
+</properties>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<properties>
+
+
+	<entry key="get_commission_rate">
+<![CDATA[
+SELECT
+	s_name
+	, cr_rate AS comm_rate
+FROM
+	commission_rate
+	, customer
+	, "security"
+WHERE
+	c_id = :cust_id	
+	AND s_symb = :symbol
+	AND cr_from_qty <= :trade_qty
+	AND cr_tt_id = :type_id
+	AND cr_ex_id = s_ex_id	
+	AND cr_c_tier = c_tier
+ORDER BY
+	cr_from_qty DESC
+OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY;
+]]>
+	</entry>
+
+
+</properties>

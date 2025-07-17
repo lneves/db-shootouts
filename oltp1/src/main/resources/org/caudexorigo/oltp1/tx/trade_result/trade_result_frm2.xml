@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<properties>
+
+	<entry key="get_customer_account">
+<![CDATA[
+SELECT
+	ca_b_id AS broker_id
+	, ca_c_id AS cust_id
+	, ca_tax_st AS tax_status
+FROM
+	customer_account
+WHERE
+	ca_id = :acct_id
+]]>
+	</entry>
+	
+	<entry key="insert_holding_summary">
+<![CDATA[
+INSERT INTO holding_summary
+(
+	hs_ca_id
+	, hs_s_symb
+	, hs_qty
+)
+VALUES
+(
+	:acct_id
+	, :symbol
+	, (- :trade_qty)
+);
+]]>
+	</entry>
+	
+	<entry key="update_holding_summary">
+<![CDATA[
+UPDATE
+	holding_summary
+SET
+	hs_qty = (:hs_qty - :trade_qty)
+WHERE
+	hs_ca_id = :acct_id
+	AND hs_s_symb = :symbol;
+]]>
+	</entry>
+	
+	<entry key="get_holding_asc">
+ <![CDATA[
+SELECT
+	h_t_id AS hold_id
+	, h_qty AS hold_qty
+	, h_price AS hold_price
+FROM
+	holding
+WHERE
+	h_ca_id = :acct_id
+	AND h_s_symb = :symbol
+ORDER BY
+	h_dts ASC;
+]]>
+	</entry>
+
+	<entry key="get_holding_desc">
+ <![CDATA[
+SELECT
+	h_t_id AS hold_id
+	, h_qty AS hold_qty
+	, h_price AS hold_price
+FROM
+	holding
+WHERE
+	h_ca_id = :acct_id
+	AND h_s_symb = :symbol
+ORDER BY
+	h_dts DESC;
+]]>
+	</entry>
+
+	<entry key="insert_holding_history">
+ <![CDATA[
+INSERT INTO holding_history
+(
+	hh_h_t_id
+	, hh_t_id
+	, hh_before_qty
+	, hh_after_qty
+)
+VALUES
+(
+	:hold_id
+	, :trade_id
+	, :hold_qty
+	, :after_qty
+);
+]]>
+	</entry>
+
+	<entry key="update_holding">
+ <![CDATA[
+UPDATE
+	holding
+SET
+	h_qty = :qty
+WHERE
+	h_t_id = :hold_id;
+]]>
+	</entry>
+
+	<entry key="delete_holding">
+ <![CDATA[
+DELETE FROM	holding
+WHERE
+	h_t_id =:hold_id;
+]]>
+	</entry>
+	
+	<entry key="insert_holding">
+ <![CDATA[
+INSERT INTO holding
+(
+	h_t_id
+	, h_ca_id
+	, h_s_symb
+	, h_dts
+	, h_price
+	, h_qty
+)
+VALUES
+(
+	:trade_id
+	, :acct_id
+	, :symbol
+	, :trade_dts
+	, :trade_price
+	, :qty
+);
+]]>
+	</entry>
+	
+	<entry key="delete_holding_summary">
+ <![CDATA[
+DELETE FROM	holding_summary
+WHERE
+	hs_ca_id = :acct_id
+	AND hs_s_symb = :symbol;
+]]>
+	</entry>
+	
+</properties>

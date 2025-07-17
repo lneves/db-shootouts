@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<properties>
+
+	<entry key="get_trade_history">
+ <![CDATA[
+SELECT
+		th_dts,
+		th_st_id
+FROM
+	(
+		SELECT
+			th_dts,
+			th_st_id,
+			RANK() OVER(PARTITION BY th_t_id ORDER BY th_dts) AS pos
+		FROM
+			trade_history
+		WHERE
+			th_t_id = ANY(:trade_ids::bigint[])
+	) AS t
+WHERE
+	pos <= 3
+]]>
+	</entry>
+
+</properties>
